@@ -107,6 +107,8 @@ class Blockchain:
         Arguments:
             :participant: The person for whom to calculate the balance.
         """
+        if self.hosting_node == None:
+            return None
         participant = self.hosting_node
         # Fetch a list of all sent coin amounts for the given person (empty lists are returned if the person was NOT the sender)
         # This fetches sent amounts of transactions that were already included in blocks of the blockchain
