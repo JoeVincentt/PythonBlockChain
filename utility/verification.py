@@ -36,15 +36,15 @@ class Verification:
             return True
 
     @staticmethod
-    def verify_transaction(transaction, get_balance, chack_funds=True):
+    def verify_transaction(transaction, get_balance, check_funds=True):
         """Verify a transaction by checking whether the sender has sufficient coins.
 
          Arguments:
         :transaction: The transaction that should be verified.
         """
 
-        if chack_funds:
-            sender_balance = get_balance()
+        if check_funds:
+            sender_balance = get_balance(transaction.sender)
             return sender_balance >= transaction.amount and Wallet.verify_transaction(transaction)
         else:
             return Wallet.verify_transaction(transaction)
