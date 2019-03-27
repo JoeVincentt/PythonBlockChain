@@ -167,20 +167,25 @@ def broadcast_block():
         return jsonify(response), 400
 
     if 'block' not in values:
-        response = {
-            'message': 'Some data is missing.'
-        }
+        response = {'message': 'Some data is missing.'}
         return jsonify(response), 400
 
     block = values['block']
     if block['index'] == blockchain.chain[-1].index + 1:
-        blockchain.add_block(block)
+        if blockchain.add_block(block):
+            response = {'message': 'Block added.'}
+            return jsonify(response), 201
+        else:
+            response = {'message': 'Block invalid.'}
+            return jsonify(response), 409
     elif block['index'] > blockchain.chain[-1].index:
-        pass
+        response = {
+            'message': 'Blockchain seesms to differ from local blockchain, block not added'}
+        blockchain.resolve_conflicts = True
+        return jsonify(response), 200
     else:
         response = {
-            'message': 'Blockchain seesms to be shorter, block not added'
-        }
+            'message': 'Blockchain seesms to be shorter, block not added'}
         return jsonify(response), 409
 
 
