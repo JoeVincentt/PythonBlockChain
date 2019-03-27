@@ -189,6 +189,16 @@ def broadcast_block():
         return jsonify(response), 409
 
 
+@app.route('/resolve-conflicts', methods=['POST'])
+def resolve_conflicts():
+    replaced = blockchain.resolve()
+    if replaced:
+        response = {'message': 'Chain was replaced.'}
+    else:
+        response = {'message': 'Local chain kept!'}
+    return jsonify(response), 200
+
+
 @app.route('/transactions', methods=['GET'])
 def get_opent_transactions():
     transactions = blockchain.get_open_transactions()
@@ -198,6 +208,10 @@ def get_opent_transactions():
 
 @app.route('/mine', methods=['POST'])
 def mine():
+    if blockchain.resolve_conflicts == True:
+        response = {'message': 'Resolve conflicts first, block is not added!'}
+        return jsonify(response), 409
+
     block = blockchain.mine_block()
 
     if block != None:
